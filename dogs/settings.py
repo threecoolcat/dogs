@@ -68,7 +68,7 @@ ROOT_URLCONF = 'dogs.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates', 'web/dist'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -138,7 +138,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "web/dist")
+]
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (                   # 默认响应渲染类
         'rest_framework.renderers.JSONRenderer',    # json渲染器

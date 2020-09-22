@@ -1,21 +1,49 @@
 <template>
   <div>
-  主订单
-    <ul style="list-style-type: list;">
-       <li style="border:1px solid #bbb; padding:4px;display:block"
-           v-for="item in mainList"
-           :key="item.id">
-         title:{{item.title}}, buyer: {{item.buyer}}
-       </li>
-    </ul>
-    订单明细
-    <ul>
-       <li style="border:1px solid #ccc; padding:4px;display:block"
-           v-for="item in detailList"
-           :key="item.id">
-         name:{{item.name}}, number: {{item.number}}
-       </li>
-    </ul>
+    <el-row>
+      <el-col :gutter="20">
+        <el-card class="box-card">
+          <div slot="header" class="clearfix">
+            <span>主订单</span>
+          </div>
+          <div>
+            <el-table :data="mainList" border strip highlight-current-row @row-click="loadDetail">
+              <el-table-column label="采购单号" prop="id" />
+              <el-table-column label="采购单名称" prop="title" />
+              <el-table-column label="采购员" prop="buyer" />
+              <el-table-column label="供货商" prop="supplier" />
+              <el-table-column label="联系电话" prop="call" />
+              <el-table-column>
+                <template slot-scope="scope">
+                  <el-button size="mini" type="text" @click="loadDetail(scope.row)">查看明细</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
+    <el-divider/>
+    <el-row>
+      <el-col :gutter="20">
+        <el-card class="box-card" >
+          <div slot="header" class="clearfix">
+            <span>采购单明细:{{currentM.title}}</span>
+          </div>
+          <div>
+            <el-table :data="detailList" border strip v-if="detailList.length > 0">
+              <el-table-column label="采购单号" prop="Mid" />
+              <el-table-column label="顺序号" prop="id" />
+              <el-table-column label="采购水果名称" prop="name" />
+              <el-table-column label="采购数量" prop="number" />
+              <el-table-column label="单位" prop="unit" />
+              <el-table-column label="单价" prop="price" />
+              
+            </el-table>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -30,13 +58,14 @@ export default {
   data() {
       return {
         mainList: [],
-        detailList: []
+        detailList: [],
+        currentM: {}
       }
   },
   //加载方法
   created() {
     this.loadMain()
-    this.loadDetail()
+    // this.loadDetail()
   },
   //方法定义
   methods: {
@@ -46,11 +75,13 @@ export default {
             this.mainList = resp.data;
         })
     },
-    loadDetail() {
-        axios.get('http://127.0.0.1:8000/detail', {}).then(resp=>{
-            // console.log('detail',resp)
-            this.detailList = resp.data;
-        })
+
+    loadDetail(row, col, e) {
+      this.currentM = row;
+      axios.get('http://127.0.0.1:8000/detail', {params: {Mid: row.id}}).then(resp=>{
+          // console.log('detail',resp)
+          this.detailList = resp.data;
+      })
     }
   }
 }
