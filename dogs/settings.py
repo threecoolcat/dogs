@@ -139,7 +139,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "web/dist")
+    os.path.join(BASE_DIR, "web/dist/static/")
 ]
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (                   # 默认响应渲染类
