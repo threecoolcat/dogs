@@ -1,5 +1,7 @@
 <template>
   <div>
+    <el-row>{{ msg }}</el-row>
+    <el-divider/>
     <el-row>
       <el-col :gutter="20">
         <el-card class="box-card">
