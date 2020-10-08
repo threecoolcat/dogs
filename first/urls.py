@@ -16,8 +16,10 @@ Including another URLconf
 
 from django.urls import path,include
 from first.views import GetPurchaseM,GetMsg,PurchaseMV,ShowDModelSerial,TestPMDB,PDM
+from django.views.generic import TemplateView
 urlpatterns = [
-    path('',GetPurchaseM),
+    path('',TemplateView.as_view(template_name='index.html')),
+    # path('',GetPurchaseM),
     path('msg/',GetMsg),
     path('main/',PurchaseMV.as_view(),),
     path('detail/',ShowDModelSerial),

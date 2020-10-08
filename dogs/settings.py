@@ -39,11 +39,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'first',
     'rest_framework',
+    # 增加CORS组件
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # 增加CORS中间件
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -51,12 +55,20 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# 前端端分离时，要允许跨越请求
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:8080',  # 本机调试地址
+)
+X_FRAME_OPTIONS = 'SAMEORIGIN'
+
 ROOT_URLCONF = 'dogs.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['templates', 'web/dist'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -82,7 +94,8 @@ DATABASES = {
         'HOST': '127.0.0.1',            # 数据库地址(127.0.0.1为本机）
         'PORT': 3306,                   # 安装时的默认端口号
         'USER': 'root',                 # 数据库超级用户名
-        'PASSWORD': 'cats123.',         # 数据库密码
+        'PASSWORD': 'www.isoftstone.CoM',         # 数据库密码
+        # 'PASSWORD': 'cats123.',         # 数据库密码
         'ATOMIC_REQUESTS': True,        # 全局开启事务
     }
 }
@@ -125,7 +138,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "web/dist/static/")
+]
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (                   # 默认响应渲染类
         'rest_framework.renderers.JSONRenderer',    # json渲染器

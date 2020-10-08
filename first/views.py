@@ -46,7 +46,9 @@ from rest_framework.parsers import JSONParser
 from io import BytesIO
 def ShowDModelSerial(request):
     if request.method=='GET':
-        Detail=PurchaseDetail.objects.filter(id__gte=1)  #获取id>=1的记录
+        # 获取参数
+        mid=request.GET['Mid']
+        Detail=PurchaseDetail.objects.filter(Mid__exact=mid)  #获取id>=1的记录
         detail=PurchaseMDModelSerial(instance=Detail,many=True)
         sdata= JSONRenderer().render(detail.data)  # 把序列化数据渲染成JSON格式
         print('输出JSON数据：')
