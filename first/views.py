@@ -102,3 +102,40 @@ class PDM(APIView):                       #APIView的基本使用方法和View�
         MM=PurchaseDetail.objects.all()       #获取模型对象数据
         Sdetail=PDMSerializer(instance=MM,many=True) #模型数据序列化
         return Response(Sdetail.data)
+# 要先安装 Crypto
+# pip install Crypto
+# 然后再安装以下步骤， 否则会报错
+# python 在 Windows下使用AES时要安装的是pycryptodome 模块 。
+#
+# pip install pycryptodome
+#
+# python 在 Linux下使用AES时要安装的是pycrypto模块。
+#
+# pip install pycrypto
+
+import base64
+from Crypto.Cipher import AES
+from Crypto import Random
+from binascii import b2a_hex, a2b_hex
+from django.views.decorators.csrf import csrf_exempt
+# 对称加密， 密钥和VUE端的相同。 例子中， 密钥必须为16个字符， 如果密钥不足16个字符，请自行补齐
+AES_KEY = '1234567890123456'
+
+# 解密方法
+def aes_decode(data, key):
+    try:
+        aes = AES.new(str.encode(key), AES.MODE_ECB)  # 初始化加密器
+        decrypted_text = aes.decrypt(base64.decodebytes(bytes(data, encoding='utf8'))).decode("utf8")  # 解密
+        decrypted_text = decrypted_text[:-ord(decrypted_text[-1])]  # 去除多余补位
+    except Exception as e:
+        print(e)
+        pass
+    return decrypted_text
+
+
+# 解密请求
+@csrf_exempt
+def req_decrypt(request):
+    data = request.POST['data']
+    decrypted = aes_decode(data, AES_KEY)
+    return HttpResponse(decrypted)
