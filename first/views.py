@@ -121,12 +121,32 @@ from django.views.decorators.csrf import csrf_exempt
 # 对称加密， 密钥和VUE端的相同。 例子中， 密钥必须为16个字符， 如果密钥不足16个字符，请自行补齐
 AES_KEY = '1234567890123456'
 
+
+def add_to_16(text):
+    if len(text.encode('utf-8')) % 16:
+        add = 16 - (len(text.encode('utf-8')) % 16)
+    else:
+        add = 0
+    text = text + ('\0' * add)
+    return text.encode('utf-8')
+
+
+# 加密方法
+def aes_encode(data, key):
+    try:
+        aes = AES.new(str.encode(key), AES.MODE_ECB)  # 初始化加密器
+        cipher_text = aes.encrypt(add_to_16(data))
+    except Exception as e:
+        pass
+    return base64.encodebytes(cipher_text).decode("utf8")
+
+
 # 解密方法
 def aes_decode(data, key):
     try:
         aes = AES.new(str.encode(key), AES.MODE_ECB)  # 初始化加密器
         decrypted_text = aes.decrypt(base64.decodebytes(bytes(data, encoding='utf8'))).decode("utf8")  # 解密
-        decrypted_text = decrypted_text[:-ord(decrypted_text[-1])]  # 去除多余补位
+        decrypted_text = decrypted_text.rstrip('\0')  # 去除多余补位
     except Exception as e:
         print(e)
         pass
